@@ -1,0 +1,8 @@
+name: img2img
+
+dependencies:
+  - python==3.6.10
+  - pip
+  - cython
+  - pip:
+    - -r requirements.txt

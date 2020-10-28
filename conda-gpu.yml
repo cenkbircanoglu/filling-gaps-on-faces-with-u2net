@@ -1,0 +1,11 @@
+name: img2img
+
+dependencies:
+  - python==3.6.10
+  - pip
+  - cython
+  - cudnn
+  - cudatoolkit==10.1.243
+  - cupti==10.1.168
+  - pip:
+    - -r requirements.txt
