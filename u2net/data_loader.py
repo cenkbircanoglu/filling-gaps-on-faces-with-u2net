@@ -294,20 +294,26 @@ class SalObjDataset(Dataset):
         except Exception as e:
             try:
                 print(e, self.image_name_list[idx])
-                os.remove(self.image_name_list[idx])
-                os.remove(self.label_name_list[idx])
+                try:
+                    os.remove(self.image_name_list[idx])
+                except:
+                    pass
+                try:
+                    os.remove(self.label_name_list[idx])
+                except:
+                    pass
             except Exception as ee:
                 print(ee)
             return self.__getitem__(idx + 1)
 
 
 if __name__ == '__main__':
-    selected_image_sizes = [284, 568, 853, 1137]
+    selected_image_sizes = [284]
     for selected_image_size in selected_image_sizes:
-        dataset = SalObjDataset('./datasets/merged', transform=transforms.Compose([
+        dataset = SalObjDataset('./datasets/vide_dressing/', transform=transforms.Compose([
             RescaleT(selected_image_size),
             RandomCrop(ceil(selected_image_size - (selected_image_size / 10))),
             ToTensorLab(flag=0)]))
         loader = DataLoader(dataset, num_workers=32, shuffle=False)
         for i in tqdm(loader, total=len(loader.dataset)):
-            pass
+            print(i)

@@ -55,7 +55,7 @@ def load_dataloaders(args, batch_sizes=[24, 6, 2, 1], selected_image_sizes=[284,
                 ToTensorLab(flag=0)])
         )
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True,
-                                num_workers=cpu_count() // 2, pin_memory=True)
+                                num_workers=8, pin_memory=True)
         dataloaders.append(dataloader)
     return dataloaders
 
