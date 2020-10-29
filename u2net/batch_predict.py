@@ -66,7 +66,7 @@ def main(args):
         print("...load U2NET---173.6 MB")
         net = U2NET(3, 3)
     elif model_name == 'u2netp':
-        print("...load U2NEP---4.7 MB")
+        print("...load U2NETP---4.7 MB")
         net = U2NETP(3, 3)
     net.load_state_dict(torch.load(model_dir, map_location=torch.device('cpu')))
     if torch.cuda.is_available():

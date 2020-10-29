@@ -75,7 +75,6 @@ def train(args):
     if torch.cuda.is_available():
         batch_sizes = [i * torch.cuda.device_count() for i in batch_sizes]
     dataloaders = load_dataloaders(args, batch_sizes=batch_sizes, selected_image_sizes=selected_image_sizes)
-    num_images = len(dataloaders[0].dataset)
     # ------- 3. define model --------
     # define the net
     if model_name == 'u2net':
