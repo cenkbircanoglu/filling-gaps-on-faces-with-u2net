@@ -16,22 +16,13 @@ from u2net.model import U2NET  # full size version 173.6 MB
 from u2net.model import U2NETP  # small version u2net 4.7 MB
 
 
-# normalize the predicted SOD probability map
-def normPRED(d):
-    ma = torch.max(d)
-    mi = torch.min(d)
-
-    dn = (d - mi) / (ma - mi)
-
-    return dn
-
 
 def save_output(image_name, pred, d_dir):
     predict = pred
     predict = predict.squeeze()
     predict_np = predict.cpu().data.numpy()
 
-    im = Image.fromarray(predict_np * 255).convert('RGB')
+    im = Image.fromarray(predict_np * 255)
     img_name = image_name.split(os.sep)[-1]
     image = io.imread(image_name)
     imo = im.resize((image.shape[1], image.shape[0]), resample=Image.BILINEAR)
@@ -99,8 +90,6 @@ def main(args):
 
         # normalization
         pred = d1[:, :, :, :]
-        pred = normPRED(pred)
-
         # save results to test_results folder
         if not os.path.exists(prediction_dir):
             os.makedirs(prediction_dir, exist_ok=True)
