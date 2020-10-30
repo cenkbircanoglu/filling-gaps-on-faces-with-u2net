@@ -24,6 +24,8 @@ from u2net.model import U2NETP
 
 bce_loss = nn.BCELoss(size_average=True)
 
+l1_loss = nn.L1Loss()
+
 
 def muti_bce_loss_fusion(d0, d1, d2, d3, d4, d5, d6, labels_v):
     loss0 = bce_loss(d0, labels_v)
@@ -34,7 +36,8 @@ def muti_bce_loss_fusion(d0, d1, d2, d3, d4, d5, d6, labels_v):
     loss5 = bce_loss(d5, labels_v)
     loss6 = bce_loss(d6, labels_v)
 
-    loss = loss0 + loss1 + loss2 + loss3 + loss4 + loss5 + loss6
+    l1 = l1_loss(d0, labels_v)
+    loss = loss0 + loss1 + loss2 + loss3 + loss4 + loss5 + loss6 + l1
     # print("l0: %3f, l1: %3f, l2: %3f, l3: %3f, l4: %3f, l5: %3f, l6: %3f\n" % (
     #    loss0.item(), loss1.item(), loss2.item(), loss3.item(), loss4.item(), loss5.item(), loss6.item()))
 
@@ -55,7 +58,7 @@ def load_dataloaders(args, batch_sizes=[24, 6, 2, 1], selected_image_sizes=[284,
                 ToTensorLab(flag=0)])
         )
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True,
-                                num_workers=8, pin_memory=True)
+                                num_workers=cpu_count() // 2, pin_memory=True)
         dataloaders.append(dataloader)
     return dataloaders
 
@@ -70,7 +73,7 @@ def train(args):
 
     epoch_num = args.epochs
 
-    batch_sizes = [24]  # [12, 6, 2, 1]
+    batch_sizes = [16]  # [12, 6, 2, 1]
     selected_image_sizes = [284]  # [284, 568, 853, 1137]
     if torch.cuda.is_available():
         batch_sizes = [i * torch.cuda.device_count() for i in batch_sizes]

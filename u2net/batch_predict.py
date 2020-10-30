@@ -1,5 +1,6 @@
 import argparse
 import os
+from collections import OrderedDict
 
 import numpy as np
 import torch
@@ -16,18 +17,15 @@ from u2net.model import U2NET  # full size version 173.6 MB
 from u2net.model import U2NETP  # small version u2net 4.7 MB
 
 
-
 def save_output(image_name, pred, d_dir):
     predict = pred
     predict = predict.squeeze()
     predict_np = predict.cpu().data.numpy()
-
-    im = Image.fromarray(predict_np * 255)
+    predict_np = predict_np.transpose(1, 2, 0)
+    im = Image.fromarray((predict_np * 255.).astype(np.uint8))
     img_name = image_name.split(os.sep)[-1]
     image = io.imread(image_name)
     imo = im.resize((image.shape[1], image.shape[0]), resample=Image.BILINEAR)
-
-    pb_np = np.array(imo)
 
     aaa = img_name.split(".")
     bbb = aaa[0:-1]
@@ -68,12 +66,19 @@ def main(args):
     elif model_name == 'u2netp':
         print("...load U2NETP---4.7 MB")
         net = U2NETP(3, 3)
-    net.load_state_dict(torch.load(model_dir, map_location=torch.device('cpu')))
+    state_dict = torch.load(model_dir, map_location=torch.device('cpu'))
+    new_state_dict = OrderedDict()
+    for key, value in state_dict.items():
+        new_key = key.replace('module.', '')
+        new_state_dict[new_key] = value
+
+    net.load_state_dict(new_state_dict)
     if torch.cuda.is_available():
         net.cuda()
     net.eval()
 
     # --------- 4. inference for each image ---------
+    counter = 0
     for i_test, data_test in enumerate(test_salobj_dataloader):
 
         print("inferencing:", test_salobj_dataset.image_name_list[i_test].split(os.sep)[-1])
@@ -94,7 +99,9 @@ def main(args):
         if not os.path.exists(prediction_dir):
             os.makedirs(prediction_dir, exist_ok=True)
         save_output(test_salobj_dataset.image_name_list[i_test], pred, prediction_dir)
-
+        counter += 1
+        if counter == 20:
+            break
         del d1, d2, d3, d4, d5, d6, d7
 
 
