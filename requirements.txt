@@ -3,3 +3,4 @@ torchvision==0.7.0
 pandas
 tqdm
 scikit-image
+opencv-python

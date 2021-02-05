@@ -16,6 +16,7 @@ from u2net.data_loader import RandomCrop
 from u2net.data_loader import RescaleT
 from u2net.data_loader import SalObjDataset
 from u2net.data_loader import ToTensorLab
+from u2net.create_dataset import data_loader
 from u2net.early_stopping import EarlyStopping
 from u2net.model import U2NET
 from u2net.model import U2NETP
@@ -45,12 +46,12 @@ def muti_bce_loss_fusion(d0, d1, d2, d3, d4, d5, d6, labels_v):
     return loss0, loss
 
 
-def load_dataloaders(args, batch_sizes=24):
+def load_dataloaders(args, batch_size=24):
     dataset = SalObjDataset(
         data_root=args.data_dir,
         image_name_csv_file=args.image_name_csv_file,
-        img_folder_name='original',
-        mask_folder_name='masks',
+        img_folder_name='masked',
+        mask_folder_name='original',
         transform=transforms.Compose([
             RescaleT(320),
             RandomCrop(288),
@@ -72,9 +73,7 @@ def train(args):
     epoch_num = args.epochs
 
     batch_size = 16
-    if torch.cuda.is_available():
-        batch_size = i * batch_size
-    dataloader = load_dataloaders(args, batch_sizes=batch_sizes)
+    dataloader = load_dataloaders(args, batch_size=batch_size)
     # ------- 3. define model --------
     # define the net
     if model_name == 'u2net':

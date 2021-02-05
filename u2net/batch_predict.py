@@ -49,8 +49,8 @@ def main(args):
     # 1. dataloader
     test_salobj_dataset = SalObjDataset(data_root=args.data_dir,
                                         image_name_csv_file=args.image_name_csv_file,
-                                        img_folder_name='original',
-                                        mask_folder_name='masks',
+                                        img_folder_name='masked',
+                                        mask_folder_name='original',
                                         transform=transforms.Compose([RescaleT(320),
                                                                       ToTensorLab(flag=0)])
                                         )
