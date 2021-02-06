@@ -413,8 +413,7 @@ class U2NET(nn.Module):
 
         d0 = self.outconv(torch.cat((d1, d2, d3, d4, d5, d6), 1))
 
-        return torch.sigmoid(d0), torch.sigmoid(d1), torch.sigmoid(d2), torch.sigmoid(d3), torch.sigmoid(
-            d4), torch.sigmoid(d5), torch.sigmoid(d6)
+        return d0, d1, d2, d3, d4, d5, d6
 
 
 ### U^2-Net small ###
@@ -518,11 +517,13 @@ class U2NETP(nn.Module):
 
         d0 = self.outconv(torch.cat((d1, d2, d3, d4, d5, d6), 1))
 
-        return torch.sigmoid(d0), torch.sigmoid(d1), torch.sigmoid(d2), torch.sigmoid(d3), torch.sigmoid(
-            d4), torch.sigmoid(d5), torch.sigmoid(d6)
+        return d0, d1, d2, d3, d4, d5, d6
 
 
 if __name__ == '__main__':
     x = torch.randn((1, 3, 256, 256))
     y = U2NET(3, 3)(x)
     assert y[0].shape == torch.Size([1, 3, 256, 256])
+    bce_loss = nn.MSELoss(reduction='mean')
+    print(y[0] - x)
+    print(bce_loss(y[0], x))

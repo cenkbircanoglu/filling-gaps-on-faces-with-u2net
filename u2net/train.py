@@ -1,7 +1,6 @@
 import argparse
 import os
 from collections import OrderedDict
-from math import ceil
 from multiprocessing import cpu_count
 
 import torch
@@ -16,7 +15,6 @@ from u2net.data_loader import RandomCrop
 from u2net.data_loader import RescaleT
 from u2net.data_loader import SalObjDataset
 from u2net.data_loader import ToTensorLab
-from u2net.create_dataset import data_loader
 from u2net.early_stopping import EarlyStopping
 from u2net.model import U2NET
 from u2net.model import U2NETP
@@ -24,7 +22,7 @@ from u2net.model import U2NETP
 # ------- 1. define loss function --------
 
 
-bce_loss = nn.BCELoss(size_average=True)
+bce_loss = nn.MSELoss()
 
 l1_loss = nn.L1Loss()
 
@@ -40,8 +38,8 @@ def muti_bce_loss_fusion(d0, d1, d2, d3, d4, d5, d6, labels_v):
 
     l1 = l1_loss(d0, labels_v)
     loss = loss0 + loss1 + loss2 + loss3 + loss4 + loss5 + loss6 + l1
-    # print("l0: %3f, l1: %3f, l2: %3f, l3: %3f, l4: %3f, l5: %3f, l6: %3f\n" % (
-    #    loss0.item(), loss1.item(), loss2.item(), loss3.item(), loss4.item(), loss5.item(), loss6.item()))
+    print("l0: %3f, l1: %3f, l2: %3f, l3: %3f, l4: %3f, l5: %3f, l6: %3f\n" % (
+        loss0.item(), loss1.item(), loss2.item(), loss3.item(), loss4.item(), loss5.item(), loss6.item()))
 
     return loss0, loss
 
@@ -72,7 +70,7 @@ def train(args):
 
     epoch_num = args.epochs
 
-    batch_size = 16
+    batch_size = 16 * 8
     dataloader = load_dataloaders(args, batch_size=batch_size)
     # ------- 3. define model --------
     # define the net

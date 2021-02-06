@@ -13,7 +13,7 @@ from u2net.data_loader import SalObjDataset
 from u2net.data_loader import ToTensorLab
 from u2net.model import U2NET  # full size version 173.6 MB
 from u2net.model import U2NETP  # small version u2net 4.7 MB
-from u2net.train import muti_bce_loss_fusion
+from u2net.train import muti_bce_loss_fusion, l1_loss
 
 
 def iou(pred, target, n_classes=2):
@@ -85,7 +85,7 @@ def main(args):
             inputs_test = Variable(inputs)
 
         d1, d2, d3, d4, d5, d6, d7 = net(inputs_test)
-        loss2, loss = muti_bce_loss_fusion(d1, d2, d3, d4, d5, d6, d7, labels)
+        loss2, loss = l1_loss(d1, labels)
 
         running_loss += loss.item()
         running_tar_loss += loss2.item()

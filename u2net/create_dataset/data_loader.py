@@ -10,7 +10,7 @@ from u2net.create_dataset.image_folder import make_dataset
 
 class CreateDataset(data.Dataset):
     def __init__(self, img_file, mask_file, load_size, fine_size, is_train, resize_or_crop, no_augment, no_flip,
-                 no_rotation, mask_type=[0, 1, 2, 3]):
+                 no_rotation, mask_type=[0, 1]):
         self.mask_type = mask_type
         self.is_train = is_train
         self.fine_size = fine_size
