@@ -22,7 +22,7 @@ from u2net.model import U2NETP
 # ------- 1. define loss function --------
 
 
-bce_loss = nn.MSELoss()
+bce_loss = nn.L1Loss()
 
 l1_loss = nn.L1Loss()
 
@@ -37,9 +37,9 @@ def muti_bce_loss_fusion(d0, d1, d2, d3, d4, d5, d6, labels_v):
     loss6 = bce_loss(d6, labels_v)
 
     l1 = l1_loss(d0, labels_v)
-    loss = loss0 + loss1 + loss2 + loss3 + loss4 + loss5 + loss6 + l1
-    print("l0: %3f, l1: %3f, l2: %3f, l3: %3f, l4: %3f, l5: %3f, l6: %3f\n" % (
-        loss0.item(), loss1.item(), loss2.item(), loss3.item(), loss4.item(), loss5.item(), loss6.item()))
+    loss = loss0 / 2 + loss1 / 3 + loss2 / 4 + loss3 / 5 + loss4 / 6 + loss5 / 7 + loss6 / 8 + l1
+    # print("L1Loss: %3f l0: %3f, l1: %3f, l2: %3f, l3: %3f, l4: %3f, l5: %3f, l6: %3f\n" % (
+    #     l1.item(), loss0.item(), loss1.item(), loss2.item(), loss3.item(), loss4.item(), loss5.item(), loss6.item()))
 
     return loss0, loss
 
