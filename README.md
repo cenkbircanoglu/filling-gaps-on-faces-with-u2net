@@ -1,27 +1,18 @@
 
 
-# Img2Img
+# Filling the Gaps on Faces
 
+Original U2Net Model updated to output 3 channel and loss function altered to L1Loss.
+Training is done on Celeba-HQ dataset for ~150K iteration.
 
+Best model can be found [here.](u2net_gap_filling_for_faces.pth)
 
-```bash
-nohup python -m u2net.train     \
-  --data_dir ./datasets/regular_masked_faces     \
-  --model_dir ./checkpoints/u2net_regular_masked_faces_l1loss/ \
-  --model_name u2net > logs/regular_masked_faces_l1loss.log &
-```
+## Results
 
+Original Image             |  Masked Image |  Model Result
+:-------------------------:|:-------------------------:|:-------------------------:
+![](examples/original-1.jpg)  |  ![](examples/masked-1.jpg) |  ![](examples/result-1.jpg)
+![](examples/original-2.jpg)  |  ![](examples/masked-2.jpg) |  ![](examples/result-2.jpg)
+![](examples/original-3.jpg)  |  ![](examples/masked-3.jpg) |  ![](examples/result-3.jpg)
+![](examples/original-4.jpg)  |  ![](examples/masked-4.jpg) |  ![](examples/result-4.jpg)
 
-```bash
-python -m u2net.batch_predict \
-    --data_dir ./datasets/val \
-    --output_dir ./outputs/u2net_regular_masked_faces/ \
-    --model_dir ./checkpoints/u2net_regular_masked_faces/u2net_bce_itr_22068_train_0.442945_tar_0.039415.pth  \
-    --model_name u2net
-```
-
-
-python -m u2net.train     \
---data_dir ./datasets/regular_masked_faces     \
---model_dir ./checkpoints/test/ \
---model_name u2net 
